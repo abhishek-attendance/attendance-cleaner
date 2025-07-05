@@ -47,18 +47,26 @@ def clean_workbook(raw_bytes):
 # ───────────────────── UI ─────────────────────
 st.set_page_config(page_title="Attendance Cleaner", page_icon="🧹", layout="centered")
 
-col1, col2 = st.columns([1, 3])
+col1, col2 = st.columns([1, 5])
 with col1:
-    st.image("logo.png", width=110)
+    st.image("logo.png", width=100)
 with col2:
-    st.markdown(
-        '<div style="font-size: 2em; font-weight: bold; color: #4CAF50;">'
-        '🧹 Biometric Attendance Cleaner</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown("""
+        <div style='padding-top:10px'>
+        <h1 style='margin-bottom: 0px; color: #2c3e50;'>🧹 Biometric Attendance Cleaner</h1>
+        <p style='margin-top: 0px; color: grey;'>Powered by SevenMentor Pvt. Ltd.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
 
 st.markdown("This tool lets you upload a messy Excel file and export a clean one with employee info included.")
 st.markdown("")
+
+st.markdown("---")
+st.markdown(
+    "<p style='text-align:center; font-size:0.9em;'>👨‍💻 Developed by <b>Abhishek Wavhal</b></p>",
+    unsafe_allow_html=True
+)
 
 uploaded_file = st.file_uploader("📂 Upload your raw biometric Excel file (.xlsx)", type=["xlsx", "xlsm"])
 
