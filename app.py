@@ -53,7 +53,7 @@ with col1:
 with col2:
     st.markdown("""
         <div style='padding-top:10px'>
-        <h1 style='margin-bottom: 0px; color: #2c3e50;'>🧹 Biometric Attendance Cleaner</h1>
+        <h1 style='margin-bottom: 0px; color: #2c3e50;'>🧹 Biometric Attendance         Cleaner</h1>
         <p style='margin-top: 0px; color: grey;'>Powered by SevenMentor Pvt. Ltd.</p>
         </div>
     """, unsafe_allow_html=True)
