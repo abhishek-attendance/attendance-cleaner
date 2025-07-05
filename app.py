@@ -70,10 +70,43 @@ st.markdown(
 
 uploaded_file = st.file_uploader("📂 Upload your raw biometric Excel file (.xlsx)", type=["xlsx", "xlsm"])
 
+uploaded_file = st.file_uploader(
+    "📂 Upload your raw biometric Excel file (.xlsx / .xlsm)",
+    type=["xlsx", "xlsm"]
+)
+
 if uploaded_file:
-    with st.spinner("⚙️ Cleaning in progress..."):
+    # -------- Clean the uploaded file --------
+    with st.spinner("⚙️ Cleaning in progress…"):
         cleaned_df = clean_workbook(uploaded_file.read())
 
     if cleaned_df is None:
         st.error("❌ No valid data found in the uploaded file.")
     else:
+        st.success(f"✅ Cleaned successfully! Total rows: {len(cleaned_df)}")
+
+        # ---------- Preview ----------
+        st.dataframe(cleaned_df.head(50), use_container_width=True)
+
+        # ---------- Prepare download ----------
+        out = io.BytesIO()
+        with pd.ExcelWriter(out, engine="openpyxl") as writer:
+            cleaned_df.to_excel(writer, index=False)
+
+        st.download_button(
+            label="📥 Download Cleaned File",
+            data=out.getvalue(),
+            file_name=f"attendance_cleaned_{date.today()}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+else:
+    st.info("⬆️ Upload an Excel file above to begin cleaning.")
+
+# ───────────────────── Footer ─────────────────────
+st.markdown("---")
+st.markdown(
+    "<p style='text-align:center; font-size:0.9em;'>"
+    "👨‍💻 Developed by <b>Abhishek Wavhal</b>"
+    "</p>",
+    unsafe_allow_html=True
+)
