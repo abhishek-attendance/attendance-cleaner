@@ -3,20 +3,17 @@ import pandas as pd
 import io
 from datetime import date
 
-# Required columns
 required_columns = [
     "Date", "ArrTim", "LateHrs", "DepTim", "EarlHrs", "WrkHrs", "OvTim",
     "Present", "Absent", "Paid_Lv", "UnPaidLv", "PrsAbs", "Remarks"
 ]
 
-# Find header row
 def find_header_row(df):
     for i, row in df.iterrows():
         if any(str(c).strip().lower() in {c.lower() for c in required_columns} for c in row):
             return i
     return None
 
-# Get emp code & name
 def extract_emp_metadata(df_raw, lookahead=10):
     empcode = empname = None
     for _, row in df_raw.head(lookahead).iterrows():
@@ -47,25 +44,28 @@ def clean_workbook(raw_bytes):
         frames.append(df)
     return pd.concat(frames, ignore_index=True) if frames else None
 
-# UI
-st.title("📊 Attendance Cleaner")
-uploaded_file = st.file_uploader("Upload biometric Excel file", type=["xlsx", "xlsm"])
+# ───────────────────── UI ─────────────────────
+st.set_page_config(page_title="Attendance Cleaner", page_icon="🧹", layout="centered")
+
+col1, col2 = st.columns([1, 3])
+with col1:
+    st.image("logo.png", width=110)
+with col2:
+    st.markdown(
+        '<div style="font-size: 2em; font-weight: bold; color: #4CAF50;">'
+        '🧹 Biometric Attendance Cleaner</div>',
+        unsafe_allow_html=True
+    )
+
+st.markdown("This tool lets you upload a messy Excel file and export a clean one with employee info included.")
+st.markdown("")
+
+uploaded_file = st.file_uploader("📂 Upload your raw biometric Excel file (.xlsx)", type=["xlsx", "xlsm"])
+
 if uploaded_file:
-    with st.spinner("Cleaning…"):
+    with st.spinner("⚙️ Cleaning in progress..."):
         cleaned_df = clean_workbook(uploaded_file.read())
+
     if cleaned_df is None:
-        st.error("❌ No valid sheets found.")
+        st.error("❌ No valid data found in the uploaded file.")
     else:
-        st.success(f"✅ Cleaned {len(cleaned_df)} rows!")
-        st.dataframe(cleaned_df.head(50), use_container_width=True)
-        out = io.BytesIO()
-        with pd.ExcelWriter(out, engine="openpyxl") as writer:
-            cleaned_df.to_excel(writer, index=False)
-        st.download_button(
-            "📥 Download cleaned file",
-            data=out.getvalue(),
-            file_name=f"attendance_cleaned_{date.today()}.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-else:
-    st.info("⬆️ Upload Excel file to begin.")
