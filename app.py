@@ -49,7 +49,7 @@ st.set_page_config(page_title="Attendance Cleaner", page_icon="🧹", layout="ce
 
 col1, col2 = st.columns([1, 5])
 with col1:
-    st.image("logo.png", width=50)
+    st.image("logo.png", width=90)
 with col2:
     st.markdown("""
         <div style='padding-top:10px'>
